@@ -76,6 +76,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="qcbTransmitSystemIdleInfo">
+        <property name="toolTip">
+         <string>If checked information such as the global system idle time is transmitted to the server</string>
+        </property>
+        <property name="text">
+         <string>Transmit system idle information</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="qcbSuppressIdentity">
         <property name="toolTip">
          <string>Don't send certificate to server and don't save passwords. (Not saved).</string>

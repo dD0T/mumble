@@ -1373,6 +1373,10 @@ void Server::msgPing(ServerUser *uSource, MumbleProto::Ping &msg) {
 
 	quint64 ts = msg.timestamp();
 
+	if (msg.has_idlesecs()) {
+		uSource->bwr.resetIdleSeconds(msg.idlesecs());
+	}
+
 	msg.Clear();
 	msg.set_timestamp(ts);
 	msg.set_good(cs.uiGood);

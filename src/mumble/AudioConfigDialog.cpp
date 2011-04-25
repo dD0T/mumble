@@ -136,7 +136,7 @@ void AudioInputDialog::load(const Settings &r) {
 	loadSlider(qsAmp, 20000 - r.iMinLoudness);
 
 	// Idle auto actions
-	qsbIdle->setValue(r.iIdleTime / 60);
+	qsbIdle->setValue(r.uiIdleTime / 60);
 	loadComboBox(qcbIdleAction, r.iaeIdleAction);
 
 	int echo = 0;
@@ -161,7 +161,7 @@ void AudioInputDialog::save() const {
 	s.atTransmit = static_cast<Settings::AudioTransmit>(qcbTransmit->currentIndex());
 
 	// Idle auto actions
-	s.iIdleTime = qsbIdle->value() * 60;
+	s.uiIdleTime = qsbIdle->value() * 60;
 	s.iaeIdleAction = static_cast<Settings::IdleAction>(qcbIdleAction->currentIndex());
 
 	s.bShowPTTButtonWindow = qcbPushWindow->isChecked();

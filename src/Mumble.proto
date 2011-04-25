@@ -33,6 +33,7 @@ message Ping {
 	optional float udp_ping_var = 9;
 	optional float tcp_ping_avg = 10;
 	optional float tcp_ping_var = 11;
+	optional uint32 idlesecs = 12;
 }
 
 message Reject {

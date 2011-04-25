@@ -270,7 +270,7 @@ Settings::Settings() {
 	iNoiseSuppress = -30;
 
 	// Idle auto actions
-	iIdleTime = 5 * 60;
+	uiIdleTime = 5 * 60;
 	iaeIdleAction = Nothing;
 
 	vsVAD = Amplitude;
@@ -354,6 +354,8 @@ Settings::Settings() {
 	bAutoConnect = false;
 	ptProxyType = NoProxy;
 	usProxyPort = 0;
+
+	bTransmitIdleInfo = true;
 
 	iMaxImageSize = ciDefaultMaxImageSize;
 	iMaxImageWidth = 1024; // Allow 1024x1024 resolution
@@ -556,7 +558,7 @@ void Settings::load(QSettings* settings_ptr) {
 	SAVELOAD(iOutputDelay, "audio/outputdelay");
 
 	// Idle auto actions
-	SAVELOAD(iIdleTime, "audio/idletime");
+	SAVELOAD(uiIdleTime, "audio/idletime");
 	LOADENUM(iaeIdleAction, "audio/idleaction");
 
 	SAVELOAD(fAudioMinDistance, "audio/mindistance");
@@ -622,6 +624,7 @@ void Settings::load(QSettings* settings_ptr) {
 	SAVELOAD(iMaxImageWidth, "net/maximagewidth");
 	SAVELOAD(iMaxImageHeight, "net/maximageheight");
 	SAVELOAD(qsRegionalHost, "net/region");
+	SAVELOAD(bTransmitIdleInfo, "net/transmitidleinfo");
 
 	SAVELOAD(bExpert, "ui/expert");
 	SAVELOAD(qsLanguage, "ui/language");
@@ -842,7 +845,7 @@ void Settings::save() {
 	SAVELOAD(iOutputDelay, "audio/outputdelay");
 
 	// Idle auto actions
-	SAVELOAD(iIdleTime, "audio/idletime");
+	SAVELOAD(uiIdleTime, "audio/idletime");
 	SAVELOAD(iaeIdleAction, "audio/idleaction");
 
 	SAVELOAD(fAudioMinDistance, "audio/mindistance");
@@ -907,6 +910,7 @@ void Settings::save() {
 	SAVELOAD(iMaxImageWidth, "net/maximagewidth");
 	SAVELOAD(iMaxImageHeight, "net/maximageheight");
 	SAVELOAD(qsRegionalHost, "net/region");
+	SAVELOAD(bTransmitIdleInfo, "net/transmitidleinfo");
 
 	SAVELOAD(bExpert, "ui/expert");
 	SAVELOAD(qsLanguage, "ui/language");

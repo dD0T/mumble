@@ -410,10 +410,10 @@ int main(int argc, char **argv) {
 	} else if (g.s.uiUpdateCounter == 1) {
 		// Previous versions used old idle action style, convert it
 
-		if (g.s.iIdleTime == 5 * 60) { // New default
+		if (g.s.uiIdleTime == 5 * 60) { // New default
 			g.s.iaeIdleAction = Settings::Nothing;
 		} else {
-			g.s.iIdleTime = 60 * qRound(g.s.iIdleTime / 60.); // Round to minutes
+			g.s.uiIdleTime = 60 * qRound(g.s.uiIdleTime / 60.); // Round to minutes
 			g.s.iaeIdleAction = Settings::Deafen; // Old behavior
 		}
 	}

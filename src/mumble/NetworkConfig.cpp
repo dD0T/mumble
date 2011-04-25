@@ -67,7 +67,9 @@ void NetworkConfig::load(const Settings &r) {
 	loadCheckBox(qcbAutoReconnect, s.bReconnect);
 	loadCheckBox(qcbAutoConnect, s.bAutoConnect);
 	loadCheckBox(qcbSuppressIdentity, s.bSuppressIdentity);
+	loadCheckBox(qcbTransmitSystemIdleInfo, s.bTransmitIdleInfo);
 	loadComboBox(qcbType, s.ptProxyType);
+
 
 	qleHostname->setText(r.qsProxyHost);
 
@@ -99,6 +101,7 @@ void NetworkConfig::save() const {
 	s.bReconnect = qcbAutoReconnect->isChecked();
 	s.bAutoConnect = qcbAutoConnect->isChecked();
 	s.bSuppressIdentity = qcbSuppressIdentity->isChecked();
+	s.bTransmitIdleInfo = qcbTransmitSystemIdleInfo->isChecked();
 
 	s.ptProxyType = static_cast<Settings::ProxyType>(qcbType->currentIndex());
 	s.qsProxyHost = qleHostname->text();
@@ -168,6 +171,7 @@ bool NetworkConfig::expert(bool b) {
 	qcbQoS->setVisible(b);
 	qgbProxy->setVisible(b);
 	qcbUsage->setVisible(b);
+	qcbTransmitSystemIdleInfo->setVisible(b);
 
 	qgbMisc->setVisible(b); // For now Misc only contains elements visible in expert mode
 	qcbImageDownload->setVisible(b);

@@ -58,9 +58,11 @@ ServerUser::ServerUser(Server *p, QSslSocket *socket) : Connection(p, socket), U
 ServerUser::operator const QString() const {
 	return QString::fromLatin1("%1:%2(%3)").arg(qsName).arg(uiSession).arg(iId);
 }
-BandwidthRecord::BandwidthRecord() {
-	iRecNum = 0;
-	iSum = 0;
+BandwidthRecord::BandwidthRecord() :
+	iRecNum(0),
+	iSum(0),
+	uiIdleControlOffset(0) {
+
 	for (int i=0;i<N_BANDWIDTH_SLOTS;i++)
 		a_iBW[i] = 0;
 }
@@ -94,14 +96,15 @@ int BandwidthRecord::onlineSeconds() const {
 }
 
 int BandwidthRecord::idleSeconds() const {
-	quint64 iIdle = a_qtWhen[(iRecNum + N_BANDWIDTH_SLOTS - 1) % N_BANDWIDTH_SLOTS].elapsed();
-	if (tIdleControl.elapsed() < iIdle)
-		iIdle = tIdleControl.elapsed();
+	quint64 iIdle = a_qtWhen[(iRecNum + N_BANDWIDTH_SLOTS - 1) % N_BANDWIDTH_SLOTS].elapsed(); // Last time voice was sent
+	if ((tIdleControl.elapsed() + uiIdleControlOffset)  < iIdle)
+		iIdle = tIdleControl.elapsed() + uiIdleControlOffset;
 
 	return static_cast<int>(iIdle / 1000000LL);
 }
 
-void BandwidthRecord::resetIdleSeconds() {
+void BandwidthRecord::resetIdleSeconds(unsigned int offset) {
+	uiIdleControlOffset = offset * 1000000LL;
 	tIdleControl.restart();
 }
 

@@ -43,6 +43,7 @@
 #include "Global.h"
 #include "NetworkConfig.h"
 #include "VoiceRecorder.h"
+#include "System.h"
 
 #ifdef USE_OPUS
 #include "opus.h"
@@ -822,13 +823,13 @@ void AudioInput::encodeAudioFrame() {
 	if (! bIsSpeech && ! bPreviousVoice) {
 		iBitrate = 0;
 
-		if (g.s.iaeIdleAction != Settings::Nothing && ((tIdle.elapsed() / 1000000ULL) > g.s.iIdleTime)) {
+		if (g.s.iaeIdleAction != Settings::Nothing &&
+			(tIdle.elapsed() / 1000000ULL) > g.s.uiIdleTime &&	// Mumble activity idle
+			System::getIdleSeconds() > g.s.uiIdleTime) {	// System idle
 
 			if (g.s.iaeIdleAction == Settings::Deafen && !g.s.bDeaf) {
-				tIdle.restart();
 				emit doDeaf();
 			} else if (g.s.iaeIdleAction == Settings::Mute && !g.s.bMute) {
-				tIdle.restart();
 				emit doMute();
 			}
 		}

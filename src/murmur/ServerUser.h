@@ -56,6 +56,8 @@ struct BandwidthRecord {
 	int iSum;
 	Timer tFirst;
 	Timer tIdleControl;
+	quint64 uiIdleControlOffset;
+
 	unsigned short a_iBW[N_BANDWIDTH_SLOTS];
 	Timer a_qtWhen[N_BANDWIDTH_SLOTS];
 
@@ -63,7 +65,7 @@ struct BandwidthRecord {
 	bool addFrame(int size, int maxpersec);
 	int onlineSeconds() const;
 	int idleSeconds() const;
-	void resetIdleSeconds();
+	void resetIdleSeconds(unsigned int offset = 0);
 	int bandwidth() const;
 };
 

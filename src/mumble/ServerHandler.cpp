@@ -45,6 +45,7 @@
 #include "PacketDataStream.h"
 #include "SSL.h"
 #include "User.h"
+#include "System.h"
 
 ServerHandlerMessageEvent::ServerHandlerMessageEvent(const QByteArray &msg, unsigned int mtype, bool flush) : QEvent(static_cast<QEvent::Type>(SERVERSEND_EVENT)) {
 	qbaMsg = msg;
@@ -413,6 +414,16 @@ void ServerHandler::sendPing() {
 	mpp.set_late(cs.uiLate);
 	mpp.set_lost(cs.uiLost);
 	mpp.set_resync(cs.uiResync);
+
+	{
+		AudioInputPtr ai = g.ai;
+		const unsigned int mumbleIdle = ai ? (ai->tIdle.elapsed() / 1000000ULL) : 0;
+		const unsigned int overallIdle = std::min(System::getIdleSeconds(), mumbleIdle);
+
+		if (g.s.bTransmitIdleInfo) {
+			mpp.set_idlesecs(overallIdle);
+		}
+	}
 
 
 	if (boost::accumulators::count(accUDP)) {

@@ -190,7 +190,8 @@ struct Settings {
 	int iNoiseSuppress;
 
 	// Idle auto actions
-	unsigned int iIdleTime;
+	unsigned int uiIdleTime;
+	bool bTransmitIdleInfo;
 	IdleAction iaeIdleAction;
 
 	VADSource vsVAD;
