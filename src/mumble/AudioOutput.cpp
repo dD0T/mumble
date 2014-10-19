@@ -260,7 +260,7 @@ void AudioOutput::dumpDebugBufferTo(const QString &path) {
 	qWarning() << "Dumping audio output debug data to " << path;
 	
 	QDataStream out(&file);
-	out << m_debugBuffer.size();
+	out << static_cast<quint64>(m_debugBuffer.size());
 	
 	for (boost::circular_buffer<DebugFrame>::const_iterator iter = m_debugBuffer.begin();
 	     iter != m_debugBuffer.end();
