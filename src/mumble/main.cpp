@@ -317,6 +317,10 @@ int main(int argc, char **argv) {
 
 	// Initialize logger
 	g.l = new Log();
+	
+	if (g.s.enableAudioDebugging) {
+		qWarning() << "Audio debugging enabled";
+	}
 
 	// Initialize database
 	g.db = new Database();

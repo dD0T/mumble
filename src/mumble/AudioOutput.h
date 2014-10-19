@@ -33,8 +33,12 @@
 #define MUMBLE_MUMBLE_AUDIOOUTPUT_H_
 
 #include <boost/shared_ptr.hpp>
+#ifndef Q_MOC_RUN
+#include <boost/circular_buffer.hpp>
+#endif
 #include <QtCore/QObject>
 #include <QtCore/QThread>
+#include <QtCore/QDataStream>
 
 // AudioOutput depends on User being valid. This means it's important
 // to removeBuffer from here BEFORE MainWindow gets any UserLeft
@@ -129,6 +133,31 @@ class AudioOutput : public QThread {
 		const float *getSpeakerPos(unsigned int &nspeakers);
 		static float calcGain(float dotproduct, float distance);
 		unsigned int getMixerFreq() const;
+		
+		void dumpDebugBufferTo(const QString& path);
+	private:
+		///
+		/// Adds a frame into a circular debug buffer.
+		/// \param user Client user this frame is associated with.
+		/// \param frame Raw frame data
+		/// \param sequenceNumber Frame sequence number
+		/// \param type Frame type
+		///
+		void addFrameToDebugBuffer(ClientUser *user, const QByteArray &frame, unsigned int sequenceNumber, MessageHandler::UDPMessageType type);
+		
+		struct DebugFrame {
+			quint64 timeReference;
+			unsigned int sessionId;
+			QByteArray frame;
+			unsigned int sequenceNumber;
+			MessageHandler::UDPMessageType type;
+		};
+		
+		friend QDataStream& operator<<(QDataStream& stream, const DebugFrame& debugFrame);
+		friend QDataStream& operator>>(QDataStream& stream,  DebugFrame& debugFrame);
+		
+		boost::circular_buffer<DebugFrame> m_debugBuffer;
+		Timer m_debugTimer;
 };
 
 #endif

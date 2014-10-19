@@ -115,7 +115,9 @@ AudioOutput::AudioOutput()
     , iSampleSize(0)
     
     , qrwlOutputs()
-    , qmOutputs() {
+    , qmOutputs()
+
+    , m_debugBuffer(g.s.enableAudioDebugging ? (10 /* users */ * 100 /* frames per second */ * 20 /* seconds */) : 0) {
 	
 	// Nothing
 }
@@ -183,6 +185,11 @@ void AudioOutput::addFrameToBuffer(ClientUser *user, const QByteArray &qbaPacket
 	if (iChannels == 0)
 		return;
 	qrwlOutputs.lockForRead();
+
+	if (g.s.enableAudioDebugging) {
+		addFrameToDebugBuffer(user, qbaPacket, iSeq, type);
+	}
+
 	AudioOutputSpeech *aop = qobject_cast<AudioOutputSpeech *>(qmOutputs.value(user));
 
 	if (! aop || (aop->umtType != type)) {
@@ -206,6 +213,62 @@ void AudioOutput::addFrameToBuffer(ClientUser *user, const QByteArray &qbaPacket
 	aop->addFrameToBuffer(qbaPacket, iSeq);
 
 	qrwlOutputs.unlock();
+}
+
+void AudioOutput::addFrameToDebugBuffer(ClientUser *user, const QByteArray &frame, unsigned int sequenceNumber, MessageHandler::UDPMessageType type) {
+	DebugFrame debugFrame = {
+		m_debugTimer.elapsed(),
+		user->uiSession,
+		frame,
+		sequenceNumber,
+		type
+	};
+	m_debugBuffer.push_back(debugFrame);
+}
+
+
+QDataStream& operator<<(QDataStream& stream, const AudioOutput::DebugFrame& debugFrame) {
+	stream << debugFrame.timeReference;
+	stream << debugFrame.sessionId;
+	stream << debugFrame.frame;
+	stream << debugFrame.sequenceNumber;
+	stream << static_cast<int>(debugFrame.type);
+	
+	return stream;
+}
+
+QDataStream& operator>>(QDataStream& stream,  AudioOutput::DebugFrame& debugFrame) {
+	stream >> debugFrame.timeReference;
+	stream >> debugFrame.sessionId;
+	stream >> debugFrame.frame;
+	stream >> debugFrame.sequenceNumber;
+	int type;
+	stream >> type;
+	debugFrame.type = static_cast<MessageHandler::UDPMessageType>(type);
+	
+	return stream;
+}
+
+void AudioOutput::dumpDebugBufferTo(const QString &path) {
+	QWriteLocker lock(&qrwlOutputs);
+	QFile file(path);
+	if (!file.open(QIODevice::WriteOnly)) {
+		qWarning() << "Could not dump audio output debug buffer to " << path;
+		return;
+	}
+	
+	qWarning() << "Dumping audio output debug data to " << path;
+	
+	QDataStream out(&file);
+	out << m_debugBuffer.size();
+	
+	for (boost::circular_buffer<DebugFrame>::const_iterator iter = m_debugBuffer.begin();
+	     iter != m_debugBuffer.end();
+	     ++iter) {
+		out << *iter;
+	}
+	
+	qWarning() << "Dumped " << m_debugBuffer.size() << " debug frames";
 }
 
 void AudioOutput::removeBuffer(const ClientUser *user) {

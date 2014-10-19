@@ -316,6 +316,13 @@ struct Settings {
 	/// Removes the add and edit options in the connect dialog if set.
 	bool disableConnectDialogEditing;
 	
+	/// Enables internal machinery for writing audio debug logs.
+	/// If set the audio pipeline will keep ring-buffers of data
+	/// to be dumped on user request. This feature is meant to help with
+	/// debugging intermittent glitches in the audio pipeline. For
+	/// now this feature is output only.
+	bool enableAudioDebugging;
+	
 	// Config updates
 	unsigned int uiUpdateCounter;
 

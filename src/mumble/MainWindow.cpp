@@ -248,6 +248,11 @@ void MainWindow::createActions() {
 	gsCycleTransmitMode=new GlobalShortcut(this, idx++, tr("Cycle Transmit Mode", "Global Shortcut"));
 	gsCycleTransmitMode->setObjectName(QLatin1String("gsCycleTransmitMode"));
 
+	if (g.s.enableAudioDebugging) {
+		audioDebugDumpShortcut = new GlobalShortcut(this, idx++, tr("Dump audio debug data"), true);
+		audioDebugDumpShortcut->setObjectName(QLatin1String("audioDebugDumpShortcut"));
+	}
+	
 #ifndef Q_OS_MAC
 	qstiIcon->show();
 #endif
@@ -2381,7 +2386,7 @@ void MainWindow::removeTarget(ShortcutTarget *st)
 		qmCurrentTargets[*st] -= 1;
 }
 
-void MainWindow::on_gsCycleTransmitMode_triggered(bool down, QVariant scdata) 
+void MainWindow::on_gsCycleTransmitMode_triggered(bool down, QVariant scdata)
 {
 	if (down) 
 	{
@@ -2405,6 +2410,15 @@ void MainWindow::on_gsCycleTransmitMode_triggered(bool down, QVariant scdata)
 
 		g.l->log(Log::Information, tr("Cycled Transmit Mode to %1").arg(qsNewMode));
 	}
+}
+
+void MainWindow::on_audioDebugDumpShortcut_triggered(bool down, QVariant scdata)
+{
+	AudioOutputPtr ao = g.ao;
+	if (!ao)
+		return;
+	
+	ao->dumpDebugBufferTo(QDir(g.s.qsRecordingPath).filePath(QLatin1String("mumbleAudioOutputDump.bin")));
 }
 
 void MainWindow::whisperReleased(QVariant scdata) {

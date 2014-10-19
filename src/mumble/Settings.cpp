@@ -379,6 +379,7 @@ Settings::Settings() {
 	bDisableCELT = false;
 	disablePublicList = false;
 	disableConnectDialogEditing = false;
+	enableAudioDebugging = false;
 	
 	// Config updates
 	uiUpdateCounter = 0;
@@ -689,6 +690,7 @@ void Settings::load(QSettings* settings_ptr) {
 	SAVELOAD(bDisableCELT, "audio/disablecelt");
 	SAVELOAD(disablePublicList, "ui/disablepubliclist");
 	SAVELOAD(disableConnectDialogEditing, "ui/disableconnectdialogediting");
+	SAVELOAD(enableAudioDebugging, "audio/enableaudiodebugging");
 	
 
 	// LCD
@@ -979,6 +981,7 @@ void Settings::save() {
 	SAVELOAD(bDisableCELT, "audio/disablecelt");
 	SAVELOAD(disablePublicList, "ui/disablepubliclist");
 	SAVELOAD(disableConnectDialogEditing, "ui/disableconnectdialogediting");
+	SAVELOAD(enableAudioDebugging, "audio/enableaudiodebugging");
 
 	// LCD
 	SAVELOAD(iLCDUserViewMinColWidth, "lcd/userview/mincolwidth");
