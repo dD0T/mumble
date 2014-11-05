@@ -883,6 +883,7 @@ void AudioInput::encodeAudioFrame() {
 			if (len <= 0) {
 				iBitrate = 0;
 				qWarning() << "encodeOpusFrame failed" << iBufferedFrames << iFrameSize << len;
+				iBufferedFrames = 0;
 				return;
 			}
 			encoded = true;
