@@ -721,7 +721,7 @@ void AudioInput::encodeAudioFrame() {
 	max = 1;
 	for (i=0;i<iFrameSize;i++) {
 		sum += static_cast<float>(psMic[i] * psMic[i]);
-		max = std::max(static_cast<short>(abs(psMic[i]), max);
+		max = std::max(static_cast<short>(abs(psMic[i])), max);
 	}
 	dPeakMic = qMax(20.0f*log10f(sqrtf(sum / static_cast<float>(iFrameSize)) / 32768.0f), -96.0f);
 	dMaxMic = max;
