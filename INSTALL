@@ -60,9 +60,9 @@ CONFIG+=no-bundled-celt (Mumble)
  Note that this requires that you have CELT 0.7.0 or 0.7.1 installed on
  your system as CELT does not maintain bitstream compatibility.
 
-CONFIG+=no-bundled-speex (Mumble)
- Don't use the included version of Speex, but look for one on the system.
- Note that this requires your system-installed Speex to be at least version
+CONFIG+=no-bundled-speexdsp (Mumble)
+ Don't use the included version of Speexdsp, but look for one on the system.
+ Note that this requires your system-installed Speexdsp to be at least version
  1.2.0.
 
 CONFIG+=no-opus (Mumble)

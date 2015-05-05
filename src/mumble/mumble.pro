@@ -243,8 +243,12 @@ isEmpty(QMAKE_LRELEASE) {
   }
 }
 
-unix:!CONFIG(bundled-speex):system(pkg-config --atleast-version=1.2 speexdsp) {
-  CONFIG	*= no-bundled-speex
+CONFIG(bundled-speex)|CONFIG(no-bundled-speex) {
+  warning("Mumble no longer depends on speex and is now using speexdsp. (no-)bundled-speex ignored.")
+}
+
+unix:!CONFIG(bundled-speexdsp):system(pkg-config --atleast-version=1.2 speexdsp) {
+  CONFIG	*= no-bundled-speexdsp
 }
 
 CONFIG(no-crash-report) {
@@ -260,13 +264,13 @@ CONFIG(no-xinput2) {
   DEFINES	*= NO_XINPUT2
 }
 
-CONFIG(no-bundled-speex) {
-  PKGCONFIG	*= speex speexdsp
+CONFIG(no-bundled-speexdsp) {
+  PKGCONFIG	*= speexdsp
 }
 
-!CONFIG(no-bundled-speex) {
-  INCLUDEPATH	*= ../../3rdparty/speex-src/include ../../3rdparty/speex-src/libspeex ../../3rdparty/speex-build
-  LIBS 		*= -lspeex
+!CONFIG(no-bundled-speexdsp) {
+  INCLUDEPATH	*= ../../3rdparty/speexdsp-src/include ../../3rdparty/speexdsp-src/libspeexdsp ../../3rdparty/speexdsp-build
+  LIBS 		*= -lspeexdsp
 }
 
 CONFIG(sbcelt) {
@@ -331,7 +335,7 @@ win32 {
   HEADERS	*= GlobalShortcut_win.h Overlay_win.h TaskList.h
   SOURCES	*= GlobalShortcut_win.cpp TextToSpeech_win.cpp Overlay_win.cpp SharedMemory_win.cpp Log_win.cpp os_win.cpp TaskList.cpp ../../overlay/HardHook.cpp ../../overlay/ods.cpp
   LIBS		*= -ldxguid -ldinput8 -lsapi -lole32 -lws2_32 -ladvapi32 -lwintrust -ldbghelp -llibsndfile-1 -lshell32 -lshlwapi -luser32 -lgdi32 -lpsapi
-  LIBS		*= -ldelayimp -delayload:speex.dll -delayload:shell32.dll
+  LIBS		*= -ldelayimp -delayload:speexdsp.dll -delayload:shell32.dll
 
   equals(QMAKE_TARGET.arch, x86_64) {
     DEFINES += USE_MINHOOK
@@ -373,11 +377,11 @@ unix {
     CONFIG *= pulseaudio
   }
 
-  !CONFIG(no-bundled-speex) {
-    QMAKE_CFLAGS *= -I../../3rdparty/speex-src/include -I../../3rdparty/speex-build
-    QMAKE_CXXFLAGS *= -I../../3rdparty/speex-src/include -I../../3rdparty/speex-build
-    QMAKE_CXXFLAGS_RELEASE *= -I../../3rdparty/speex-src/include -I../../3rdparty/speex-build
-    QMAKE_CXXFLAGS_DEBUG *= -I../../3rdparty/speex-src/include -I../../3rdparty/speex-build
+  !CONFIG(no-bundled-speexdsp) {
+    QMAKE_CFLAGS *= -I../../3rdparty/speexdsp-src/include -I../../3rdparty/speexdsp-build
+    QMAKE_CXXFLAGS *= -I../../3rdparty/speexdsp-src/include -I../../3rdparty/speexdsp-build
+    QMAKE_CXXFLAGS_RELEASE *= -I../../3rdparty/speexdsp-src/include -I../../3rdparty/speexdsp-build
+    QMAKE_CXXFLAGS_DEBUG *= -I../../3rdparty/speexdsp-src/include -I../../3rdparty/speexdsp-build
   }
 
   CONFIG *= link_pkgconfig

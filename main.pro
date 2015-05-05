@@ -2,11 +2,11 @@ TEMPLATE = subdirs
 CONFIG *= ordered debug_and_release
 
 !CONFIG(no-client) {
-  unix:!CONFIG(bundled-speex):system(pkg-config --atleast-version=1.2 speexdsp) {
-	CONFIG *= no-bundled-speex
+  unix:!CONFIG(bundled-speexdsp):system(pkg-config --atleast-version=1.2 speexdsp) {
+	CONFIG *= no-bundled-speexdsp
   }
-  !CONFIG(no-bundled-speex) {
-    SUBDIRS *= 3rdparty/speex-build
+  !CONFIG(no-bundled-speexdsp) {
+    SUBDIRS *= 3rdparty/speexdsp-build
   }
 
   CONFIG(sbcelt) {

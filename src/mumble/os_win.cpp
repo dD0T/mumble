@@ -44,7 +44,6 @@
 
 extern "C" {
 	void __cpuid(int a[4], int b);
-	void mumble_speex_init();
 };
 
 #define PATH_MAX 1024
@@ -243,7 +242,6 @@ void os_init() {
 
 	SetHeapOptions();
 	enableCrashOnCrashes();
-	mumble_speex_init();
 
 #ifdef QT_NO_DEBUG
 	QString console = g.qdBasePath.filePath(QLatin1String("Console.txt"));
