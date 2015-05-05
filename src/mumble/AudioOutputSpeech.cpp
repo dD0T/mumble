@@ -51,7 +51,6 @@ AudioOutputSpeech::AudioOutputSpeech(ClientUser *user, unsigned int freq, Messag
 
 	cCodec = NULL;
 	cdDecoder = NULL;
-	dsSpeex = NULL;
 	opusState = NULL;
 
 	bHasTerminator = false;
@@ -66,15 +65,6 @@ AudioOutputSpeech::AudioOutputSpeech(ClientUser *user, unsigned int freq, Messag
 		iAudioBufferSize *= 12;
 		opusState = opus_decoder_create(iSampleRate, bStereo ? 2 : 1, NULL);
 #endif
-	} else if (umtType == MessageHandler::UDPVoiceSpeex) {
-		speex_bits_init(&sbBits);
-
-		dsSpeex = speex_decoder_init(speex_lib_get_mode(SPEEX_MODEID_UWB));
-		int iArg=1;
-		speex_decoder_ctl(dsSpeex, SPEEX_SET_ENH, &iArg);
-		speex_decoder_ctl(dsSpeex, SPEEX_GET_FRAME_SIZE, &iFrameSize);
-		speex_decoder_ctl(dsSpeex, SPEEX_GET_SAMPLING_RATE, &iSampleRate);
-		iAudioBufferSize = iFrameSize;
 	}
 
 	iOutputSize = static_cast<unsigned int>(ceilf(static_cast<float>(iAudioBufferSize * iMixerFreq) / static_cast<float>(iSampleRate)));
@@ -117,9 +107,6 @@ AudioOutputSpeech::~AudioOutputSpeech() {
 #endif
 	if (cdDecoder) {
 		cCodec->celt_decoder_destroy(cdDecoder);
-	} else if (dsSpeex) {
-		speex_bits_destroy(&sbBits);
-		speex_decoder_destroy(dsSpeex);
 	}
 
 	if (srs)
@@ -348,12 +335,6 @@ bool AudioOutputSpeech::needSamples(unsigned int snum) {
 					}
 #endif
 				} else {
-					if (qba.isEmpty()) {
-						speex_decode(dsSpeex, NULL, pOut);
-					} else {
-						speex_bits_read_from(&sbBits, qba.data(), qba.size());
-						speex_decode(dsSpeex, &sbBits, pOut);
-					}
 					for (unsigned int i=0;i<iFrameSize;++i)
 						pOut[i] *= (1.0f / 32767.f);
 				}
@@ -401,7 +382,6 @@ bool AudioOutputSpeech::needSamples(unsigned int snum) {
 					}
 #endif
 				} else {
-					speex_decode(dsSpeex, NULL, pOut);
 					for (unsigned int i=0;i<iFrameSize;++i)
 						pOut[i] *= (1.0f / 32767.f);
 				}

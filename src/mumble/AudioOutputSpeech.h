@@ -79,9 +79,6 @@ class AudioOutputSpeech : public AudioOutputUser {
 
 		OpusDecoder *opusState;
 
-		SpeexBits sbBits;
-		void *dsSpeex;
-
 		QList<QByteArray> qlFrames;
 
 		unsigned char ucFlags;
