@@ -1,0 +1,12 @@
+sudo: required # Required for apt-get build-dep
+before_install:
+    - sudo apt-get -qq update
+    - sudo apt-get build-dep -qq mumble
+
+install:
+    - git submodule --quiet update --init --recursive
+
+script:
+    - qmake CONFIG+="g15-emulator" -recursive && make -j2
+
+compiler: gcc
