@@ -82,7 +82,7 @@ static bool refreshPointers(void) {
 	return true;
 }
 
-static int fetch(float *avatar_pos, float *avatar_front, float *avatar_top, float *camera_pos, float *camera_front, float *camera_top, MumbleString *context, MumbleWideString */*identity*/) {
+static int fetch(float *avatar_pos, float *avatar_front, float *avatar_top, float *camera_pos, float *camera_front, float *camera_top, MumbleString *context, MumbleWideString /*identity*/) {
 	for (int i = 0; i < 3; i++)
 		avatar_pos[i] = avatar_front[i] = avatar_top[i] = camera_pos[i] = camera_front[i] = camera_top[i] = 0.0f;
 
@@ -152,9 +152,9 @@ static MumblePlugin blacklightplug = {
 	MUMBLE_PLUGIN_MAGIC,
 	1,
 	true,
-	MumbleInitConstWideString(L"Blacklight: Retribution"),
-	MumbleInitConstWideString(L"0.9.8.0"),
-	MumbleInitConstWideString(L"Supports Blacklight: Retribution. No identity or avatar vectors support yet."),
+	L"Blacklight: Retribution",
+	L"0.9.8.0",
+	L"Supports Blacklight: Retribution. No identity or avatar vectors support yet.",
 	fetch,
 	trylock,
 	generic_unlock,
