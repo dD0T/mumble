@@ -193,22 +193,30 @@ bool peekProc(PTR_TYPE base, T &dest) {
 	return (nread != -1 && static_cast<size_t>(nread) == in.iov_len);
 }
 
-static bool inline initialize(const std::multimap<std::wstring, unsigned long long int> &pids, const wchar_t *procname, const wchar_t *modname = NULL) {
+static bool inline initialize(MumblePIDLookup lookupFunc, MumblePIDLookupContext lookupContext, const wchar_t *procname, const wchar_t *modname = NULL) {
 	pModule = 0;
 
-	if (! pids.empty()) {
-		std::multimap<std::wstring, unsigned long long int>::const_iterator iter = pids.find(std::wstring(procname));
-
-		if (iter != pids.end())
-			pPid = static_cast<pid_t>(iter->second);
-		else
-			pPid = 0;
-	} else {
-		pPid = 0;
-	}
-
-	if (pPid == 0)
-		return false;
+        if (lookupFunc != NULL && lookupContext != NULL) {
+                while (1) {
+                        unsigned long long pid;
+                        MumblePIDLookupStatus status = lookupFunc(lookupContext, procname, &pid);
+                        if (status == MUMBLE_PID_LOOKUP_OK) {
+                                // 'pid' is filled out with a pid for bf1_x64.exe,
+                                // and the caller can continue to look for more pids
+                                // by calling lookupFunc again.
+                                //
+                                // But for now, we'll accept the first one.
+                                pPid = static_cast<pid_t>(pid);
+                                break;
+                        } else if (status == MUMBLE_PID_LOOKUP_EOF) {
+                                // no entry was found
+                                break;
+                        }
+                }
+        } else {
+                pPid = 0;
+                return false;
+        }
 
 	pModule = getModuleAddr(modname ? modname : procname);
 
